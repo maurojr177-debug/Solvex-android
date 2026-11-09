@@ -38,3 +38,11 @@ jobs:
         with:
           name: SolveX-AAB
           path: app/build/outputs/bundle/release/*.aab
+      - name: Gerar APK de teste
+        run: gradle :app:assembleDebug
+
+      - name: Disponibilizar APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: SolveX-APK-Teste
+          path: app/build/outputs/apk/debug/*.apk

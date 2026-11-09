@@ -1,4 +1,5 @@
-name: Gerar AAB SolveX
+
+name: SolveX - Android
 
 on:
   workflow_dispatch:
@@ -13,33 +14,30 @@ jobs:
       - name: Baixar projeto
         uses: actions/checkout@v4
 
-      - name: Extrair ZIP
+      - name: Extrair projeto SolveX
         run: |
           unzip -o SolveX-Android-Projeto.zip -d .
 
       - name: Configurar Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '17'
-
-      
 
       - name: Configurar Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
 
-      - name: Compilar aplicativo
-        run: gradle :app:bundleRelease
+      - name: Compilar AAB e APK
+        run: |
+          gradle :app:bundleRelease :app:assembleDebug
 
       - name: Disponibilizar AAB
         uses: actions/upload-artifact@v4
         with:
           name: SolveX-AAB
           path: app/build/outputs/bundle/release/*.aab
-      - name: Gerar APK de teste
-        run: gradle :app:assembleDebug
 
       - name: Disponibilizar APK
         uses: actions/upload-artifact@v4

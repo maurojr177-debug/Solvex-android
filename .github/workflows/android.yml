@@ -1,0 +1,44 @@
+name: Gerar APK e AAB SolveX
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar repositório
+        uses: actions/checkout@v4
+
+      - name: Preparar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Extrair projeto Android
+        run: |
+          mkdir -p projeto
+          unzip -o SolveX-Android-Corrigido.zip -d projeto
+
+      - name: Localizar projeto
+        run: |
+          find projeto -name gradlew -exec chmod +x {} \;
+          find projeto -name gradlew
+
+      - name: Gerar APK e AAB
+        run: |
+          cd "$(dirname "$(find projeto -name gradlew | head -1)")"
+          ./gradlew assembleDebug bundleRelease
+
+      - name: Disponibilizar APK e AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: SolveX-APK-AAB
+          path: |
+            projeto/**/*.apk
+            projeto/**/*.aab
